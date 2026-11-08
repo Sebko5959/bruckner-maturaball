@@ -98,7 +98,45 @@ label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:4px}
 .pa .view{display:block!important}.pa #v-cash,.pa #v-polls,.pa #v-vorstand{display:none!important}
 @media(max-width:900px){.vgrid{grid-template-columns:1fr}}
 @media print{header,.tabs,.btn,.acts,#toast,.modal,.banner,.pin+*:empty,body::before{display:none!important}body{background:#fff!important;padding:0}*{color:#000!important;box-shadow:none!important}.task,.ti,.panel,.poll,.col{background:#fff!important;border:1px solid #999!important;break-inside:avoid}.board{grid-template-columns:1fr 1fr 1fr}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}.ticker{animation:none!important}}
+/* Abend-Module */
+.topw{max-width:1200px;margin:0 auto;padding:14px 20px 0}
+.ticker{display:none;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(135deg,#a8201a,#d93a2f);color:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px;box-shadow:0 0 22px rgba(217,58,47,.4);animation:tkp 2.6s ease-in-out infinite}
+.ticker.on{display:flex}
+.ticker b{display:block;font-family:var(--serif);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+.ticker span{display:block;font-size:1.05rem;font-weight:600;overflow-wrap:anywhere;margin-top:2px}
+.ticker small{display:block;opacity:.85;font-size:.72rem;margin-top:3px}
+.ticker .btn{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.55);flex:none}
+@keyframes tkp{50%{box-shadow:0 0 34px rgba(217,58,47,.75)}}
+.sosrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.sosbtn{display:inline-flex;gap:8px;align-items:center;background:rgba(224,138,122,.14);border:1px solid var(--bad);color:var(--bad);border-radius:10px;padding:9px 14px;font-weight:700}
+.sospanel{display:none;background:var(--card);border:1px solid var(--bad);border-radius:14px;padding:16px;margin-bottom:12px}
+.sospanel.on{display:block}
+.sospanel h3{color:var(--bad);margin-bottom:10px;font-size:1.1rem}
+a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.chip{border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);border-radius:20px;padding:8px 14px;font-weight:600;font-size:.85rem;white-space:nowrap;flex:none}
+.chip.on{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a1204;border-color:transparent}
+.sv{display:none}.sv.on{display:block}
+.lc{background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px}
+.mini{font-size:.78rem;color:var(--muted)}
+.shift+.shift{border-top:1px solid var(--line)}.shift{padding:10px 0}.shift.past{opacity:.5}
+.who{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 0}
+.who .hit{color:var(--gold2);font-weight:700}
+.cts{display:flex;gap:6px;flex-wrap:wrap}
+.st-now{background:rgba(143,196,138,.2);color:var(--ok)}.st-soon{background:rgba(212,175,55,.18);color:var(--gold2)}.st-end{background:rgba(255,255,255,.08);color:var(--muted)}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.fw{max-width:820px}
+.win{display:flex;gap:6px;align-items:center}.win input{margin:0}
+.mc.stage{max-width:760px}
+.stage .sr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:1.25rem}
+.stage .sr b{font-family:var(--serif);color:var(--gold2);font-size:1.8rem;white-space:nowrap}
+.qr{background:#fff;border-radius:12px;padding:10px;display:inline-block;margin-top:14px}.qr img{display:block;width:240px;max-width:100%;height:auto}
+.pa #v-live{display:none!important}
+.banner.info{background:rgba(212,175,55,.1);border-color:var(--gold);color:var(--gold2)}
+#net{color:var(--gold2);border-color:var(--gold)}
+@media(max-width:700px){.fg{grid-template-columns:1fr}.chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.topw{padding:12px 14px 0}}
+@media print{#top,.chips{display:none!important}}
 </style>
 </head>
 <body>
@@ -110,20 +148,37 @@ label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:4px}
 <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.7-5.5 7-5.5s6.2 1.9 7 5.5"/></symbol>
 <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l.8 12.5h9.4L17.5 7M10 11v5M14 11v5"/></symbol>
 <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5l7 2.5v5.5c0 4.2-2.8 7.4-7 9-4.2-1.6-7-4.8-7-9V6z"/><path d="M9 12l2.2 2.2L15 10.4"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 4h3l1.5 4-2 1.3a10 10 0 005.7 5.7l1.3-2 4 1.5v3a2 2 0 01-2.2 2A15.5 15.5 0 014.5 6.2 2 2 0 016.5 4z"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
 </defs></svg>
 <header>
   <div class="brand"><h1>Maturaball Orga-Hub</h1><p>BG/BRG Brucknergymnasium Wels</p></div>
   <div class="right">
+    <div class="pill" id="net" style="display:none"></div>
     <div class="pill">Offen: <b id="h-open">0</b></div>
     <button class="btn ghost sm" id="v-btn" onclick="unlockV()"><svg class="i"><use href="#i-shield"/></svg>Vorstand</button>
     <button class="btn ghost sm" onclick="openUser()"><svg class="i"><use href="#i-user"/></svg><span id="cur-user">Gast</span></button>
   </div>
 </header>
+<div class="topw" id="top">
+  <div class="ticker" id="ticker" role="alert"><div><b>Live-Ticker</b><span id="tk-text"></span><small id="tk-meta"></small></div><button class="btn sm" id="tk-ok" onclick="dismissTick()">Gelesen</button></div>
+  <div class="sosrow">
+    <button class="sosbtn" id="sos-btn" aria-expanded="false" aria-controls="sos-panel" onclick="toggleSos()"><svg class="i"><use href="#i-phone"/></svg>SOS Notfall-Kontakte</button>
+    <button class="btn sm" id="tk-send" style="display:none" onclick="openTick()">Ticker-Meldung senden</button>
+  </div>
+  <div class="sospanel" id="sos-panel">
+    <h3>Notfall-Kontakte</h3>
+    <div class="row" style="margin-bottom:12px;justify-content:flex-start"><a class="btn ghost sm" href="tel:144">144 Rettung</a><a class="btn ghost sm" href="tel:133">133 Polizei</a><a class="btn ghost sm" href="tel:122">122 Feuerwehr</a><a class="btn ghost sm" href="tel:112">112 Euronotruf</a></div>
+    <div id="sos-list"></div>
+    <button class="btn sm" id="sos-add" style="display:none" onclick="openSos()">+ Kontakt hinzufügen</button>
+  </div>
+</div>
 <nav class="tabs" id="tabs">
   <button class="tab on" data-t="tasks"><svg class="i"><use href="#i-tasks"/></svg>Aufgaben</button>
   <button class="tab" data-t="timeline"><svg class="i"><use href="#i-time"/></svg>Ablauf</button>
   <button class="tab" data-t="cash"><svg class="i"><use href="#i-cash"/></svg>Kassa</button>
   <button class="tab" data-t="polls"><svg class="i"><use href="#i-poll"/></svg>Umfragen</button>
+  <button class="tab" data-t="live"><svg class="i"><use href="#i-star"/></svg>Abend</button>
   <button class="tab" data-t="vorstand" id="tab-v" style="display:none"><svg class="i"><use href="#i-shield"/></svg>Vorstand</button>
 </nav>
 <main>
@@ -173,6 +228,51 @@ label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:4px}
     <div class="vh"><div><h2>Umfragen</h2><p>Pro Person eine Stimme. Du kannst sie jederzeit ändern.</p></div><button class="btn" onclick="openPoll()">+ Neue Umfrage</button></div>
     <div id="poll-list"></div>
   </section>
+  <section id="v-live" class="view">
+    <div class="vh"><div><h2>Ballabend live</h2><p>Schichten, Fundbüro, Tombola, Ehrengäste und Fotos auf einen Blick.</p></div></div>
+    <div class="chips" id="chips"><button class="chip on" data-s="shifts">Schichten</button><button class="chip" data-s="found">Fundbüro</button><button class="chip" data-s="tombola">Tombola</button><button class="chip" data-s="guests">Ehrengäste</button><button class="chip" data-s="media">Fotos</button></div>
+
+    <div id="s-shifts" class="sv on">
+      <div class="fg fw"><div><label for="sh-q">Name suchen</label><input id="sh-q" type="search" placeholder="Name oder Klasse" oninput="renderShifts()"></div>
+      <div><label for="sh-a">Station</label><select id="sh-a" onchange="renderShifts()"><option value="">Alle Stationen</option></select></div></div>
+      <div class="row fw" style="justify-content:flex-start;margin-bottom:10px"><button class="btn ghost sm" onclick="myShifts()">Meine Schichten</button><button class="btn sm" id="ph-add" style="display:none" onclick="openPh()">Telefonnummern verwalten</button></div>
+      <div class="mini" id="sh-sum" style="margin-bottom:14px"></div>
+      <div id="sh-list"></div>
+    </div>
+
+    <div id="s-found" class="sv">
+      <div class="panel fw" style="margin-bottom:16px"><h3>Fund erfassen</h3>
+        <label for="f-cat">Art</label><select id="f-cat"><option>Handy</option><option>Schlüssel</option><option>Jacke</option><option>Geldbörse</option><option>Sonstiges</option></select>
+        <label for="f-what">Beschreibung</label><input id="f-what" placeholder="z. B. schwarzes iPhone mit blauer Hülle" maxlength="120">
+        <div class="fg"><div><label for="f-at">Fundort</label><input id="f-at" list="dl-at" placeholder="z. B. Tanzfläche" maxlength="80"></div>
+        <div><label for="f-store">Aufbewahrungsort</label><input id="f-store" list="dl-store" placeholder="z. B. Garderobe" maxlength="80"></div></div>
+        <button class="btn" style="width:100%" onclick="submitFound()">Fund erfassen</button></div>
+      <div class="chips" id="f-chips"><button class="chip on" data-f="open">Offen</button><button class="chip" data-f="done">Abgeholt</button><button class="chip" data-f="all">Alle</button></div>
+      <input id="f-q" type="search" class="fw" placeholder="Fundstücke durchsuchen" oninput="renderFound()">
+      <div id="f-list" class="fw"></div>
+    </div>
+
+    <div id="s-tombola" class="sv">
+      <div class="row fw" style="justify-content:flex-start;margin-bottom:14px"><button class="btn sm" onclick="openPrize()">+ Preise anlegen</button><button class="btn ghost sm" onclick="setStage('tombola')">Bühnenansicht</button></div>
+      <div class="panel fw" style="margin-bottom:16px"><h3>Losnummer prüfen</h3><div class="win"><input id="tk-q" placeholder="Losnummer" autocomplete="off" onkeydown="if(event.key==='Enter')chkTicket()"><button class="btn sm" onclick="chkTicket()">Prüfen</button></div><div id="tk-res" class="mini" style="margin-top:8px"></div></div>
+      <div id="pz-wrap" class="fw"><div class="panel" id="pz-tombola" style="margin-bottom:16px"></div><div class="panel" id="pz-schaetz"></div></div>
+    </div>
+
+    <div id="s-guests" class="sv">
+      <div class="row fw" style="justify-content:flex-start;margin-bottom:10px"><button class="btn sm" id="g-add" style="display:none" onclick="openGuest()">+ Ehrengast eintragen</button></div>
+      <input id="g-q" type="search" class="fw" placeholder="Name oder Tisch suchen" oninput="renderGuests()">
+      <div id="g-list" class="fw"></div>
+    </div>
+
+    <div id="s-media" class="sv">
+      <div id="md-view" class="fw"></div>
+      <div class="panel fw" id="md-admin" style="display:none;margin-top:16px"><h3>Upload-Ordner festlegen</h3>
+        <label for="md-url">Link (https://…)</label><input id="md-url" type="url" placeholder="https://…">
+        <label for="md-label">Bezeichnung</label><input id="md-label" placeholder="z. B. Fotos Maturaball 2026" maxlength="80">
+        <div class="mb"><button class="btn" onclick="saveMedia()">Speichern</button><button class="btn ghost" onclick="clearMedia()">Entfernen</button></div></div>
+    </div>
+  </section>
+
   <section id="v-vorstand" class="view">
     <div class="vh"><div><h2>Vorstand</h2><p>Übersicht und Werkzeuge nur für den Vorstand.</p></div><button class="btn ghost" onclick="printAll()">Druckansicht</button></div>
     <div class="vgrid">
@@ -189,6 +289,42 @@ label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:4px}
 </main>
 
 <div id="toast" role="status"></div>
+
+<datalist id="dl-members"></datalist>
+<datalist id="dl-at"><option>Tanzfläche</option><option>Garderobe</option><option>Toiletten</option><option>Eingang</option><option>Bar</option></datalist>
+<datalist id="dl-store"><option>Garderobe</option><option>Abendkasse</option><option>Vorstandstisch</option></datalist>
+<datalist id="dl-sos"><option>Location-Techniker</option><option>Security-Einsatzleitung</option><option>Band</option><option>Sanitätsdienst</option><option>Begleitende Lehrkräfte</option></datalist>
+
+<div id="m-tick" class="modal"><div class="mc"><h3>Ticker-Meldung</h3>
+  <label for="tk-in">Meldung an alle</label><textarea id="tk-in" rows="3" maxlength="240" placeholder="Kurze Info, die bei allen oben erscheint"></textarea>
+  <div class="chips" style="flex-wrap:wrap"><button class="chip" onclick="$('tk-in').value=this.textContent">Programm verzögert sich um 15 Minuten.</button><button class="chip" onclick="$('tk-in').value=this.textContent">Alle Helfer bitte beim Vorstand melden.</button></div>
+  <div class="mb"><button class="btn" onclick="sendTick()">Senden</button><button class="btn ghost" id="tk-end" onclick="endTick()">Beenden</button><button class="btn ghost" onclick="closeM('m-tick')">Abbrechen</button></div></div></div>
+
+<div id="m-sos" class="modal"><div class="mc"><h3>Notfall-Kontakt</h3><input type="hidden" id="sos-id">
+  <label for="sos-role">Funktion</label><input id="sos-role" list="dl-sos" maxlength="60">
+  <label for="sos-name">Name</label><input id="sos-name" maxlength="60">
+  <label for="sos-phone">Telefonnummer</label><input id="sos-phone" type="tel" inputmode="tel" placeholder="+43 …">
+  <div class="mb"><button class="btn" onclick="submitSos()">Speichern</button><button class="btn ghost" onclick="closeM('m-sos')">Abbrechen</button></div></div></div>
+
+<div id="m-ph" class="modal"><div class="mc"><h3>Telefonnummern</h3>
+  <label for="ph-in">Eine Person pro Zeile: Name; Nummer. Speichern ersetzt die gesamte Liste.</label><textarea id="ph-in" rows="9" placeholder="Selina Weiringer; +43 660 1234567"></textarea>
+  <div class="mb"><button class="btn" onclick="submitPh()">Speichern</button><button class="btn ghost" onclick="closeM('m-ph')">Abbrechen</button></div></div></div>
+
+<div id="m-prize" class="modal"><div class="mc"><h3>Preise anlegen</h3>
+  <label for="pz-game">Spiel</label><select id="pz-game"><option value="tombola">Tombola</option><option value="schaetz">Schätzspiel</option></select>
+  <label for="pz-lines">Ein Preis pro Zeile, optional mit Spender nach einem |</label><textarea id="pz-lines" rows="6" placeholder="Gutschein 50 € | Firma Beispiel"></textarea>
+  <div class="mb"><button class="btn" onclick="submitPrize()">Anlegen</button><button class="btn ghost" onclick="closeM('m-prize')">Abbrechen</button></div></div></div>
+
+<div id="m-stage" class="modal"><div class="mc stage"><div class="row" style="margin-bottom:12px"><h3 id="st-title" style="margin:0">Gewinner</h3><div class="acts"><button class="btn ghost sm" onclick="setStage('tombola')">Tombola</button><button class="btn ghost sm" onclick="setStage('schaetz')">Schätzspiel</button><button class="btn sm" onclick="closeM('m-stage')">Schließen</button></div></div><div id="st-list"></div></div></div>
+
+<div id="m-guest" class="modal"><div class="mc"><h3>Ehrengast</h3><input type="hidden" id="g-id">
+  <label for="g-name">Name</label><input id="g-name" maxlength="80">
+  <label for="g-cat">Gruppe</label><select id="g-cat"></select>
+  <label for="g-role">Funktion (optional)</label><input id="g-role" maxlength="80" placeholder="z. B. Direktor">
+  <label for="g-table">Tisch</label><input id="g-table" maxlength="20">
+  <label for="g-host">Empfang beim Einlass durch</label><input id="g-host" list="dl-members" maxlength="60">
+  <label for="g-note">Notiz (optional)</label><input id="g-note" maxlength="120">
+  <div class="mb"><button class="btn" onclick="submitGuest()">Speichern</button><button class="btn ghost" onclick="closeM('m-guest')">Abbrechen</button></div></div></div>
 
 <div id="m-user" class="modal"><div class="mc" style="text-align:center"><h3>Wer bist du?</h3><p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Dein Name erscheint bei Aufgaben und Stimmen.</p>
   <select id="user-sel"><option value="">Bitte wählen</option></select><button class="btn" style="width:100%" onclick="saveUser()">Speichern und starten</button></div></div>
@@ -250,29 +386,62 @@ let tasks=[],tl=[],polls=[],helpers=[],cashlog=[],board=null,locked=false,isV=fa
 const AREAS=['Abendkasse','Garderobe','Kuchenverkauf','Los-Verkauf','Ballspende','Schätzspiel','Maturazeitung','Ballkönig*in'],COMS=['Finanzkomitee','Dekokomitee','Tanzkomitee','Vorstand','Zeitungskomitee','Grafikkomitee','Promotingkomitee'],DAY='2026-11-13T19:00:00';
 const ids=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const toArr=o=>Object.entries(o||{}).map(([id,v])=>({id,...v}));
-const banner=m=>{$('banner').textContent=m;$('banner').style.display=m?'block':'none'};
+const banner=(m,info)=>{$('banner').textContent=m;$('banner').style.display=m?'block':'none';$('banner').classList.toggle('info',!!info)};
 const todayStr=()=>{const n=new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')};
 const fmtD=d=>d?d.slice(8,10)+'.'+d.slice(5,7)+'.':'';
-function renderAll(){renderTasks();renderTl();renderPolls();renderHp();renderBoard();renderV();
+function renderAll(){renderTasks();renderTl();renderPolls();renderHp();renderBoard();renderV();renderLive();renderTicker();
   $('tab-v').style.display=isV?'':'none';$('v-btn').style.display=isV?'none':'';$('hp-add').style.display=isV?'':'none';$('save-cash').style.display=isV?'block':'none';
   $('tl-add').style.display=(!locked||isV)?'':'none';$('lock-note').textContent=locked?'Der Ablauf ist vom Vorstand gesperrt.':'';
   if(!isV&&$('v-vorstand').classList.contains('on'))document.querySelector('.tab[data-t=tasks]').click()}
-function apply(d){const nv=!!d.v;if(d.rev===rev&&nv===isV)return;
-  rev=d.rev;isV=nv;tasks=toArr(d.tasks);tl=toArr(d.timeline);polls=toArr(d.polls);helpers=toArr(d.helpers);cashlog=toArr(d.cashlog);board=d.board||null;locked=!!d.locked;renderAll()}
+function apply(d0,fromServer=true){if(fromServer){base=d0;lset('orga_cache',d0)}
+  const d=queue.length?overlay(d0):d0,nv=!!d.v;if(d.rev===rev&&nv===isV&&lastQ===queue.length)return;lastQ=queue.length;
+  rev=d.rev;isV=nv;tasks=toArr(d.tasks);tl=toArr(d.timeline);polls=toArr(d.polls);helpers=toArr(d.helpers);cashlog=toArr(d.cashlog);board=d.board||null;locked=!!d.locked;
+  sos=toArr(d.sos);guests=toArr(d.guests);phones=toArr(d.phones);found=toArr(d.found);prizes=toArr(d.prizes);media=d.media||null;newTicker(d.ticker||null);renderAll()}
+/* Offline-Modus: letzter Stand wird lokal gespeichert, Änderungen warten in einer Warteschlange */
+let base=lget('orga_cache',null),queue=lget('orga_q',[]),offline=false,flushing=false,lastQ=-1;
+const VO=['helpers','cashlog','sos','guests','phones'];
+function sim(s,b){const V=!!s.v,c=b.col;
+  if(b.op==='lock'){if(V)s.locked=!!b.value}
+  else if(b.op==='board'||b.op==='ticker'){if(V)s[b.op]=b.text?{text:String(b.text),by:b.by||'',ts:Date.now()}:null}
+  else if(b.op==='media'){if(V)s.media=b.url?{url:b.url,label:b.label||'',by:b.by||'',ts:Date.now()}:null}
+  else if(b.op==='bulk'){if(c==='phones'&&!V)return;s[c]=b.replace?{}:(s[c]||{});(b.items||[]).forEach(it=>{if(it&&it.id&&it.data)s[c][it.id]={...(s[c][it.id]||{}),...it.data}})}
+  else{if(VO.includes(c)&&!V)return;if(c==='timeline'&&s.locked&&!V)return;s[c]=s[c]||{};
+    if(b.op==='set')s[c][b.id]={...(s[c][b.id]||{}),...b.data};else if(b.op==='del')delete s[c][b.id]}}
+function overlay(d){const s=JSON.parse(JSON.stringify(d));queue.forEach(b=>{try{sim(s,b)}catch(e){}});return s}
+function netUI(){const n=queue.length,p=$('net');
+  p.style.display=offline||n?'':'none';p.innerHTML=(offline?'Offline':'Sendet')+(n?' · <b>'+n+'</b> wartend':'');
+  if(offline)banner('Offline: Du siehst den letzten Stand. '+(n?n+(n===1?' Änderung wird':' Änderungen werden'):'Änderungen werden gespeichert und')+' gesendet, sobald wieder Netz da ist.',true);else banner('')}
+const sig=()=>typeof AbortSignal!=='undefined'&&AbortSignal.timeout?AbortSignal.timeout(8000):undefined;
+function needKey(){key='';lset('orga_key','');$('key-err').textContent='Passwort falsch. Bitte noch einmal versuchen.';openM('m-key')}
+async function sync(){
+  if(flushing)return;flushing=true;let again=false;
+  try{
+    const h={'X-Key':key};if(vkey)h['X-Vorstand']=vkey;let last=null;
+    while(queue.length){
+      const r=await fetch(API+'/state',{method:'POST',headers:{...h,'Content-Type':'application/json'},body:JSON.stringify(queue[0]),signal:sig()});
+      if(r.status===401)return needKey();
+      if(r.status>=400&&r.status<500){let e={};try{e=await r.json()}catch(_){}
+        toast(e.error==='locked'?'Der Ablauf ist gesperrt.':e.error==='vorstand'?'Das darf nur der Vorstand.':'Eine Änderung wurde abgelehnt.');queue.shift();lset('orga_q',queue);continue}
+      if(!r.ok)throw 0;
+      last=await r.json();queue.shift();lset('orga_q',queue)}
+    if(!last){const r=await fetch(API+'/state',{headers:h,signal:sig()});if(r.status===401)return needKey();if(!r.ok)throw 0;last=await r.json()}
+    offline=false;apply(last);netUI();again=queue.length>0
+  }catch(e){offline=true;apply(base||{rev:-2},false);netUI()}
+  finally{flushing=false}
+  if(again)sync()
+}
 async function call(body){
   if(!API||API.startsWith('HIER'))return banner('Die Worker-URL fehlt noch. Trage sie oben im Script bei API ein.');
   if(!key){openM('m-key');return}
-  try{
-    const h={'X-Key':key};if(vkey)h['X-Vorstand']=vkey;if(body)h['Content-Type']='application/json';
-    const r=await fetch(API+'/state',{method:body?'POST':'GET',headers:h,body:body?JSON.stringify(body):undefined});
-    if(r.status===401){key='';lset('orga_key','');$('key-err').textContent='Passwort falsch. Bitte noch einmal versuchen.';openM('m-key');return}
-    if(r.status===403){toast('Das darf nur der Vorstand.');return}
-    if(!r.ok)throw 0;apply(await r.json());banner('')
-  }catch(e){banner('Keine Verbindung zum Server. Es wird automatisch neu versucht.');if(body)toast('Speichern hat nicht geklappt.')}
+  if(body){queue.push(body);if(queue.length>300)queue.shift();lset('orga_q',queue);
+    if(offline)toast('Offline gespeichert. Wird gesendet, sobald wieder Netz da ist.');apply(base||{rev:-2},false);netUI()}
+  else if(navigator.onLine===false){offline=true;netUI();return}
+  return sync()
 }
 const put=(col,id,data)=>call({op:'set',col,id,data}), del=(col,id)=>call({op:'del',col,id});
 function saveKey(){const v=$('key-in').value.trim();if(!v)return;key=v;lset('orga_key',v);$('key-in').value='';closeM('m-key');rev=-1;call()}
-async function unlockV(){const c=(prompt('Vorstand-Code:')||'').trim();if(!c)return;vkey=c;lset('orga_vkey',c);rev=-1;await call();
+async function unlockV(){const c=(prompt('Vorstand-Code:')||'').trim();if(!c)return;const old=vkey;vkey=c;lset('orga_vkey',c);rev=-1;await call();
+  if(offline){vkey=old;lset('orga_vkey',old);return toast('Offline: Der Code kann gerade nicht geprüft werden.')}
   if(isV)toast('Vorstand-Werkzeuge freigeschaltet.');else{vkey='';lset('orga_vkey','');toast('Vorstand-Code falsch.')}}
 function lockV(){vkey='';lset('orga_vkey','');rev=-1;call()}
 
@@ -368,6 +537,132 @@ function renderV(){if(!isV)return;
 function printAll(){document.body.classList.add('pa');window.print()}
 window.addEventListener('afterprint',()=>document.body.classList.remove('pa'));
 
+/* Abend-Module */
+let sos=[],guests=[],phones=[],found=[],prizes=[],ticker=null,media=null,lastTick,fFil='open',qrOn=false,stageGame='tombola';
+const PH='<svg class="i"><use href="#i-phone"/></svg>';
+const GAMES={tombola:'Tombola',schaetz:'Schätzspiel'},GCATS=['Direktion','Stadt Wels','Sponsoren','Klassenvorstände','Sonstige'];
+const nm=s=>String(s||'').replace(/\([^)]*\)/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+const ph=s=>String(s||'').replace(/[^\d+]/g,'');
+const waNum=s=>{let p=ph(s);if(p[0]==='+')p=p.slice(1);else if(p.slice(0,2)==='00')p=p.slice(2);else if(p[0]==='0')p='43'+p.slice(1);return p.replace(/\D/g,'')};
+const hm=t=>new Date(t).toLocaleTimeString('de-AT',{hour:'2-digit',minute:'2-digit'});
+const bulk=(col,items,replace)=>call({op:'bulk',col,items,replace:!!replace});
+const phoneFor=n=>{const k=nm(n),p=phones.find(x=>nm(x.name)===k);return p?ph(p.phone):''};
+const contacts=p=>p?`<a class="btn ghost sm" href="tel:${esc(ph(p))}">${PH}Anrufen</a><a class="btn ghost sm" href="https://wa.me/${waNum(p)}" target="_blank" rel="noopener">WhatsApp</a>`:'';
+const nrm=s=>{s=String(s||'').trim().toLowerCase();return/^\d+$/.test(s)?String(+s):s};
+function keepInputs(root,fn){const el=$(root),vals={},ae=document.activeElement,fid=ae&&el.contains(ae)?ae.id:null;
+  el.querySelectorAll('input[data-keep]').forEach(i=>{if(i.value!==i.defaultValue)vals[i.id]=i.value});
+  fn();for(const id in vals){const i=$(id);if(i)i.value=vals[id]}
+  if(fid&&$(fid))$(fid).focus()}
+
+function showSub(s){document.querySelectorAll('#chips .chip').forEach(c=>c.classList.toggle('on',c.dataset.s===s));
+  document.querySelectorAll('.sv').forEach(v=>v.classList.toggle('on',v.id==='s-'+s))}
+$('chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(b)showSub(b.dataset.s)});
+
+function renderLive(){
+  $('tk-send').style.display=isV?'':'none';$('sos-add').style.display=isV?'':'none';$('ph-add').style.display=isV?'':'none';
+  $('g-add').style.display=isV?'':'none';$('md-admin').style.display=isV?'':'none';
+  renderSos();renderShifts();renderFound();renderTombola();renderGuests();renderMedia()}
+
+/* 6. Live-Ticker */
+function newTicker(t){if(lastTick!==undefined&&!isV&&t&&(!lastTick||lastTick.ts!==t.ts)){toast('Neue Ticker-Meldung: '+t.text);try{navigator.vibrate&&navigator.vibrate(200)}catch(e){}}
+  lastTick=t;ticker=t}
+function renderTicker(){const t=ticker,show=!!t&&(isV||t.ts>lget('orga_tseen',0));$('ticker').classList.toggle('on',show);
+  if(show){$('tk-text').textContent=t.text;$('tk-meta').textContent=hm(t.ts)+' Uhr'+(t.by?' · '+t.by:'');$('tk-ok').style.display=isV?'none':''}}
+function dismissTick(){if(ticker)lset('orga_tseen',ticker.ts);renderTicker()}
+function openTick(){$('tk-in').value='';$('tk-end').style.display=ticker?'':'none';openM('m-tick');$('tk-in').focus()}
+function sendTick(){const t=$('tk-in').value.trim();if(!t)return alert('Bitte eine Meldung eingeben.');call({op:'ticker',text:t,by:me()});closeM('m-tick');toast('Meldung gesendet.')}
+function endTick(){call({op:'ticker',text:''});closeM('m-tick')}
+
+/* 2. SOS */
+function toggleSos(){const p=$('sos-panel'),on=!p.classList.contains('on');p.classList.toggle('on',on);$('sos-btn').setAttribute('aria-expanded',on)}
+function renderSos(){const L=sos.slice().sort((a,b)=>(a.ord||0)-(b.ord||0));
+  $('sos-list').innerHTML=L.length?L.map(s=>`<div class="lc"><div class="row"><div><b>${esc(s.role)}</b><div class="mini">${esc(s.name||'Name noch offen')}</div></div><div class="acts">${s.phone?contacts(s.phone):'<span class="mini">Nummer fehlt</span>'}${isV?`<button class="btn ghost sm" onclick="openSos('${s.id}')">Bearbeiten</button><button class="btn ghost sm" onclick="delSos('${s.id}')" aria-label="Löschen">${TRASH}</button>`:''}</div></div></div>`).join(''):'<div class="empty" style="margin-bottom:10px">Noch keine Kontakte.</div>'}
+function openSos(id){const s=id?sos.find(x=>x.id===id):null;$('sos-id').value=s?s.id:'';$('sos-role').value=s?s.role:'';$('sos-name').value=s?s.name||'':'';$('sos-phone').value=s?s.phone||'':'';openM('m-sos')}
+function submitSos(){const role=$('sos-role').value.trim(),name=$('sos-name').value.trim(),phone=ph($('sos-phone').value),id=$('sos-id').value;
+  if(!role)return alert('Bitte eine Funktion angeben.');if(phone.replace(/\D/g,'').length<3)return alert('Bitte eine gültige Telefonnummer angeben.');
+  put('sos',id||ids(),id?{role,name,phone}:{role,name,phone,ord:Date.now()});closeM('m-sos')}
+const delSos=id=>{if(confirm('Kontakt löschen?'))del('sos',id)};
+
+/* 1. Live-Schichtplan */
+const shT=t=>{const B=new Date(DAY),[h,m]=String(t||'0:0').split(':').map(Number),d=new Date(B.getFullYear(),B.getMonth(),B.getDate(),h,m);if(h<6)d.setDate(d.getDate()+1);return d};
+function renderShifts(){const q=$('sh-q').value.trim().toLowerCase(),a=$('sh-a').value,now=new Date(),by={};let live=0,total=0;
+  helpers.forEach(h=>{if(a&&h.area!==a)return;if(q&&!(h.names||[]).some(n=>n.toLowerCase().includes(q)))return;(by[h.area]=by[h.area]||[]).push(h)});
+  $('sh-list').innerHTML=AREAS.filter(x=>by[x]).map(x=>`<div class="panel" style="margin-bottom:12px"><h3>${esc(x)}</h3>`+by[x].sort((p,r)=>shT(p.from)-shT(r.from)||String(p.team).localeCompare(String(r.team))).map(h=>{
+    const s=shT(h.from),e=shT(h.to);let st='',cl='';total++;
+    if(now>=s&&now<e){st='Jetzt im Dienst';cl='st-now';live++}else if(now<s&&s-now<36e5){st='Gleich';cl='st-soon'}else if(now>=e){st='Vorbei';cl='st-end'}
+    return `<div class="shift ${cl==='st-end'?'past':''}"><div class="row"><b>${esc(h.from)} bis ${esc(h.to)} Uhr${h.team?' · '+esc(h.team):''}</b>${st?`<span class="pr ${cl}">${st}</span>`:''}</div>`+
+      (h.names||[]).map(n=>`<div class="who"><span${q&&n.toLowerCase().includes(q)?' class="hit"':''}>${esc(n)}</span><span class="cts">${contacts(phoneFor(n))||'<span class="mini">keine Nummer</span>'}</span></div>`).join('')+'</div>'}).join('')+'</div>').join('')||'<div class="empty">Keine Schichten gefunden.</div>';
+  $('sh-sum').textContent=total?(live?live+(live===1?' Schicht ist':' Schichten sind')+' gerade im Dienst.':(now<shT('19:00')?'Die Schichten beginnen am Ballabend.':'Gerade ist keine Schicht aktiv.')):''}
+function myShifts(){if(!user)return openUser();$('sh-q').value=user;renderShifts()}
+function openPh(){$('ph-in').value=phones.slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'de')).map(p=>p.name+'; '+p.phone).join('\n');openM('m-ph')}
+function submitPh(){const items=[],lines=$('ph-in').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  for(const l of lines){const m=l.match(/^(.*?)\s*[;\t]\s*([+\d][\d\s\/()+\-]*)$/);if(!m||!m[1]||m[2].replace(/\D/g,'').length<5)return alert('Zeile nicht lesbar: '+l+'\nFormat: Name; Nummer');
+    items.push({id:'p'+nm(m[1]).replace(/[^a-z0-9äöüß]+/g,'-').slice(0,36),data:{name:m[1].slice(0,60),phone:ph(m[2])}})}
+  bulk('phones',items,true);closeM('m-ph');toast('Nummern gespeichert.')}
+
+/* 3. Fundbüro */
+$('f-chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;fFil=b.dataset.f;document.querySelectorAll('#f-chips .chip').forEach(c=>c.classList.toggle('on',c===b));renderFound()});
+function submitFound(){const what=$('f-what').value.trim(),at=$('f-at').value.trim(),store=$('f-store').value.trim();
+  if(!what||!at||!store)return alert('Bitte Beschreibung, Fundort und Aufbewahrungsort ausfüllen.');
+  put('found',ids(),{cat:$('f-cat').value,what,at,store,by:me(),ts:Date.now(),status:'open'});$('f-what').value='';$('f-at').value='';toast('Fund erfasst.')}
+function toggleFound(id){const f=found.find(x=>x.id===id);if(!f)return;
+  if(f.status==='done')return put('found',id,{status:'open',handedTo:'',updatedBy:me()});
+  const w=prompt('An wen übergeben? (Name der abholenden Person)');if(w===null)return;put('found',id,{status:'done',handedTo:w.trim().slice(0,60),hts:Date.now(),updatedBy:me()})}
+function moveFound(id){const f=found.find(x=>x.id===id);if(!f)return;const v=prompt('Neuer Aufbewahrungsort:',f.store||'');if(v&&v.trim())put('found',id,{store:v.trim().slice(0,80),updatedBy:me()})}
+const delFound=id=>{if(confirm('Fund löschen?'))del('found',id)};
+function renderFound(){const q=$('f-q').value.trim().toLowerCase();
+  const L=found.filter(f=>(fFil==='all'||(fFil==='done')===(f.status==='done'))&&(!q||[f.cat,f.what,f.at,f.store].join(' ').toLowerCase().includes(q))).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  $('f-list').innerHTML=L.length?L.map(f=>{const d=f.status==='done';return `<div class="lc"><div class="row"><b>${esc(f.cat)}: ${esc(f.what)}</b><span class="as">${d?'Abgeholt':'Offen'}</span></div>
+    <div class="mini">Gefunden bei: ${esc(f.at)}</div><div class="mini"><b>Aufbewahrt:</b> ${esc(f.store)}</div>
+    <div class="audit">Erfasst von ${esc(f.by)} um ${hm(f.ts)} Uhr${d?` · Übergeben an ${esc(f.handedTo||'?')}`:''}</div>
+    <div class="acts"><button class="btn ghost sm" onclick="toggleFound('${f.id}')">${d?'Wieder offen':'Als abgeholt markieren'}</button>${d?'':`<button class="btn ghost sm" onclick="moveFound('${f.id}')">Ort ändern</button>`}<button class="btn ghost sm" onclick="delFound('${f.id}')" aria-label="Löschen">${TRASH}</button></div></div>`}).join(''):'<div class="empty">Keine Fundstücke.</div>'}
+
+/* 4. Tombola & Schätzspiel */
+function openPrize(){$('pz-lines').value='';openM('m-prize');$('pz-lines').focus()}
+function submitPrize(){const game=$('pz-game').value,base=Date.now(),items=[];
+  $('pz-lines').value.split('\n').map(s=>s.trim()).filter(Boolean).slice(0,100).forEach((l,i)=>{const[n,sp]=l.split('|').map(x=>x.trim());if(n)items.push({id:ids(),data:{game,name:n.slice(0,100),sponsor:(sp||'').slice(0,80),ticket:'',ts:base+i}})});
+  if(!items.length)return alert('Bitte mindestens einen Preis angeben.');bulk('prizes',items);closeM('m-prize')}
+function renderTombola(){
+  keepInputs('pz-wrap',()=>['tombola','schaetz'].forEach(g=>{const L=prizes.filter(p=>p.game===g).sort((a,b)=>(a.ts||0)-(b.ts||0)),d=L.filter(p=>p.ticket).length;
+    $('pz-'+g).innerHTML=`<div class="row" style="margin-bottom:10px"><h3 style="margin:0">${GAMES[g]}</h3><span class="mini">${d} von ${L.length} gezogen</span></div>`+(L.map(p=>
+    `<div class="lc"><div class="row"><div><b>${esc(p.name)}</b>${p.sponsor?`<div class="mini">von ${esc(p.sponsor)}</div>`:''}</div>${p.ticket?`<span class="as">Nr. ${esc(p.ticket)}</span>`:'<span class="mini">offen</span>'}</div>
+    <div class="win"><input id="w-${p.id}" data-keep="1" value="${esc(p.ticket||'')}" placeholder="Gewinner-Losnummer" maxlength="20" autocomplete="off" onkeydown="if(event.key==='Enter')saveWin('${p.id}')"><button class="btn sm" onclick="saveWin('${p.id}')">Speichern</button><button class="btn ghost sm" onclick="delPrize('${p.id}')" aria-label="Löschen">${TRASH}</button></div></div>`).join('')||'<div class="empty">Noch keine Preise.</div>')}));
+  renderStage()}
+function saveWin(id){const p=prizes.find(x=>x.id===id),el=$('w-'+id);if(!p||!el)return;const v=el.value.trim().slice(0,20);
+  if(v){const o=prizes.find(x=>x.id!==id&&x.game===p.game&&x.ticket&&nrm(x.ticket)===nrm(v));if(o&&!confirm('Nr. '+v+' hat bereits „'+o.name+'“ gewonnen. Trotzdem speichern?'))return}
+  put('prizes',id,{ticket:v,drawnBy:me(),dts:Date.now()});toast(v?'Gewinner gespeichert.':'Losnummer entfernt.')}
+const delPrize=id=>{if(confirm('Preis löschen?'))del('prizes',id)};
+function chkTicket(){const v=$('tk-q').value.trim();if(!v){$('tk-res').textContent='';return}
+  const m=prizes.filter(p=>p.ticket&&nrm(p.ticket)===nrm(v));
+  $('tk-res').textContent=m.length?'Nr. '+v+' hat gewonnen: '+m.map(p=>GAMES[p.game]+', '+p.name).join(' | '):'Nr. '+v+' ist bisher nicht gezogen.'}
+function renderStage(){const L=prizes.filter(p=>p.game===stageGame).sort((a,b)=>(a.ts||0)-(b.ts||0));
+  $('st-title').textContent=GAMES[stageGame]+': Gewinner';
+  $('st-list').innerHTML=L.length?L.map(p=>`<div class="sr"><span>${esc(p.name)}</span>${p.ticket?`<b>Nr. ${esc(p.ticket)}</b>`:'<span class="mini">noch offen</span>'}</div>`).join(''):'<div class="empty">Keine Preise.</div>'}
+function setStage(g){stageGame=g;renderStage();openM('m-stage')}
+
+/* 5. Ehrengäste */
+function renderGuests(){const q=$('g-q').value.trim().toLowerCase(),L=guests.filter(g=>!q||[g.name,g.table,g.role,g.host].join(' ').toLowerCase().includes(q));
+  $('g-list').innerHTML=GCATS.filter(c=>L.some(g=>g.cat===c)).map(c=>`<div class="panel" style="margin-bottom:12px"><h3>${esc(c)}</h3>`+
+    L.filter(g=>g.cat===c).sort((a,b)=>String(a.name).localeCompare(String(b.name),'de')).map(g=>`<div class="lc"><div class="row"><div><b>${esc(g.name)}</b>${g.role?`<div class="mini">${esc(g.role)}</div>`:''}</div>${g.table?`<span class="as">Tisch ${esc(g.table)}</span>`:''}</div>
+    ${g.host?`<div class="who" style="padding:0"><span class="mini">Empfang beim Einlass: <b>${esc(g.host)}</b></span><span class="cts">${contacts(phoneFor(g.host))}</span></div>`:''}${g.note?`<div class="mini">${esc(g.note)}</div>`:''}
+    ${isV?`<div class="acts"><button class="btn ghost sm" onclick="openGuest('${g.id}')">Bearbeiten</button><button class="btn ghost sm" onclick="delGuest('${g.id}')" aria-label="Löschen">${TRASH}</button></div>`:''}</div>`).join('')+'</div>').join('')||`<div class="empty">${guests.length?'Keine Treffer.':'Noch keine Ehrengäste eingetragen.'}</div>`}
+function openGuest(id){const g=id?guests.find(x=>x.id===id):null;$('g-id').value=g?g.id:'';$('g-name').value=g?g.name:'';$('g-cat').value=g?g.cat:GCATS[0];$('g-role').value=g?g.role||'':'';$('g-table').value=g?g.table||'':'';$('g-host').value=g?g.host||'':'';$('g-note').value=g?g.note||'':'';openM('m-guest')}
+function submitGuest(){const name=$('g-name').value.trim();if(!name)return alert('Bitte einen Namen angeben.');
+  put('guests',$('g-id').value||ids(),{name,cat:$('g-cat').value,role:$('g-role').value.trim(),table:$('g-table').value.trim(),host:$('g-host').value.trim(),note:$('g-note').value.trim()});closeM('m-guest')}
+const delGuest=id=>{if(confirm('Ehrengast löschen?'))del('guests',id)};
+
+/* 7. Foto-Wall */
+const okUrl=u=>/^https:\/\/\S{3,490}$/i.test(u);
+function renderMedia(){const m=media;
+  $('md-view').innerHTML=m&&m.url?`<div class="panel"><h3>${esc(m.label||'Foto-Ordner')}</h3><p class="mini" style="margin-bottom:12px">Hier lädt das Komitee die besten Schnappschüsse und Behind-the-Scenes-Momente hoch.</p>
+    <div class="acts" style="justify-content:flex-start"><a class="btn" href="${esc(m.url)}" target="_blank" rel="noopener noreferrer">Zum Upload-Ordner</a><button class="btn ghost" onclick="copyMedia()">Link kopieren</button><button class="btn ghost" onclick="toggleQr()">${qrOn?'QR-Code ausblenden':'QR-Code anzeigen'}</button></div>
+    ${qrOn?`<div class="qr"><img alt="QR-Code zum Upload-Ordner" src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=0&data=${encodeURIComponent(m.url)}"></div><div class="mini" style="margin-top:6px">Der QR-Code wird beim Anzeigen über qrserver.com erzeugt.</div>`:''}</div>`:'<div class="empty">Noch kein Upload-Ordner festgelegt. Der Vorstand trägt ihn ein.</div>';
+  if(isV&&document.activeElement!==$('md-url')&&document.activeElement!==$('md-label')){$('md-url').value=m?m.url:'';$('md-label').value=m?m.label||'':''}}
+const toggleQr=()=>{qrOn=!qrOn;renderMedia()};
+function copyMedia(){if(!media)return;(navigator.clipboard?navigator.clipboard.writeText(media.url):Promise.reject()).then(()=>toast('Link kopiert.'),()=>prompt('Link kopieren:',media.url))}
+function saveMedia(){const url=$('md-url').value.trim();if(!okUrl(url))return alert('Bitte einen Link mit https:// angeben.');call({op:'media',url,label:$('md-label').value.trim(),by:me()});toast('Upload-Ordner gespeichert.')}
+function clearMedia(){$('md-url').value='';$('md-label').value='';call({op:'media',url:''})}
+
 /* Start */
 const vs=members.filter(n=>VORSTAND.includes(n)),rest=members.filter(n=>!VORSTAND.includes(n));
 const fill=(sel,groups)=>groups.forEach(([lab,arr])=>{const g=document.createElement('optgroup');g.label=lab;arr.forEach(n=>g.appendChild(new Option(n,n)));sel.appendChild(g)});
@@ -375,11 +670,18 @@ fill($('user-sel'),[['Vorstand',vs],['Komitee',rest]]);
 AREAS.forEach(a=>{$('hp-area').add(new Option(a,a));$('cl-area').add(new Option(a,a))});
 fill($('t-as'),[['Vorstand-Mitglieder',vs],['Weitere Personen',rest]]);
 if(user)$('cur-user').textContent=user;else openM('m-user');
-buildCash();calc();renderTasks();renderTl();renderPolls();
+AREAS.forEach(a=>$('sh-a').add(new Option(a,a)));GCATS.forEach(c=>$('g-cat').add(new Option(c,c)));
+$('dl-members').innerHTML=members.map(n=>`<option value="${esc(n)}">`).join('');
+buildCash();calc();renderTasks();renderTl();renderPolls();renderLive();
+if(base)apply(base,false);netUI();
 call();
 setInterval(renderV,60000);
+setInterval(()=>{if(!document.hidden)renderShifts()},30000);
 setInterval(()=>{if(key&&!document.hidden)call()},4000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&key)call()});
+window.addEventListener('online',()=>{if(key)call()});
+window.addEventListener('offline',()=>{offline=true;netUI()});
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
