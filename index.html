@@ -327,7 +327,10 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-conten
   <div class="mb"><button class="btn" onclick="submitGuest()">Speichern</button><button class="btn ghost" onclick="closeM('m-guest')">Abbrechen</button></div></div></div>
 
 <div id="m-user" class="modal"><div class="mc" style="text-align:center"><h3>Wer bist du?</h3><p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Dein Name erscheint bei Aufgaben und Stimmen.</p>
-  <select id="user-sel"><option value="">Bitte wählen</option></select><button class="btn" style="width:100%" onclick="saveUser()">Speichern und starten</button></div></div>
+  <select id="user-sel"><option value="">Bitte wählen</option></select><button class="btn" style="width:100%" onclick="saveUser()">Speichern und starten</button>
+  <button class="btn ghost" id="u-close" style="width:100%;margin-top:10px" onclick="closeM('m-user')">Schließen</button>
+  <button class="btn ghost" id="u-out" style="width:100%;margin-top:18px;border-color:var(--bad);color:var(--bad)" onclick="logout()">Abmelden</button>
+  <p style="font-size:.75rem;color:var(--muted);margin-top:8px">Entfernt Passwort, Name und gespeicherte Daten von diesem Gerät.</p></div></div>
 
 <div id="m-key" class="modal"><div class="mc" style="text-align:center"><h3>Passwort</h3><p id="key-err" style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Bitte gib das Passwort des Komitees ein.</p>
   <input type="password" id="key-in" autocomplete="current-password" onkeydown="if(event.key==='Enter')saveKey()"><button class="btn" style="width:100%" onclick="saveKey()">Öffnen</button></div></div>
@@ -377,7 +380,7 @@ const me=()=>user||'Komitee';
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t===b));
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.t));window.scrollTo(0,0)});
-function openUser(){$('user-sel').value=user;openM('m-user')}
+function openUser(){$('user-sel').value=user;$('u-close').style.display=user?'':'none';$('u-out').style.display=key?'':'none';openM('m-user')}
 function saveUser(){const v=$('user-sel').value;if(!v)return alert('Bitte wähle deinen Namen aus.');user=v;lset('orga_user',v);$('cur-user').textContent=v;closeM('m-user');renderPolls()}
 
 /* Gemeinsame Daten */
@@ -452,6 +455,10 @@ function saveKey(){const v=$('key-in').value.trim();if(!v)return;key=v;lset('org
 async function unlockV(){const c=(prompt('Vorstand-Code:')||'').trim();if(!c)return;const old=vkey;vkey=c;lset('orga_vkey',c);rev=-1;await call();
   if(offline){vkey=old;lset('orga_vkey',old);return toast('Offline: Der Code kann gerade nicht geprüft werden.')}
   if(isV)toast('Vorstand-Werkzeuge freigeschaltet.');else{vkey='';lset('orga_vkey','');toast('Vorstand-Code falsch.')}}
+function logout(){const n=queue.length;
+  if(!confirm(n?n+(n===1?' Änderung ist':' Änderungen sind')+' noch nicht gesendet und geht beim Abmelden verloren. Trotzdem abmelden?':'Von diesem Gerät abmelden? Passwort, Name und gespeicherte Daten werden entfernt.'))return;
+  queue=[];['orga_key','orga_vkey','orga_user','orga_cache','orga_q','orga_tseen'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
+  key='';vkey='';location.reload()}
 function lockV(){vkey='';lset('orga_vkey','');rev=-1;call()}
 
 /* Aufgaben */
