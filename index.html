@@ -389,7 +389,7 @@ const toArr=o=>Object.entries(o||{}).map(([id,v])=>({id,...v}));
 const banner=(m,info)=>{$('banner').textContent=m;$('banner').style.display=m?'block':'none';$('banner').classList.toggle('info',!!info)};
 const todayStr=()=>{const n=new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')};
 const fmtD=d=>d?d.slice(8,10)+'.'+d.slice(5,7)+'.':'';
-function renderAll(){renderTasks();renderTl();renderPolls();renderHp();renderBoard();renderV();renderLive();renderTicker();
+function renderAll(){for(const f of [renderTasks,renderTl,renderPolls,renderHp,renderBoard,renderV,renderLive,renderTicker]){try{f()}catch(e){console.error(e)}}
   $('tab-v').style.display=isV?'':'none';$('v-btn').style.display=isV?'none':'';$('hp-add').style.display=isV?'':'none';$('save-cash').style.display=isV?'block':'none';
   $('tl-add').style.display=(!locked||isV)?'':'none';$('lock-note').textContent=locked?'Der Ablauf ist vom Vorstand gesperrt.':'';
   if(!isV&&$('v-vorstand').classList.contains('on'))document.querySelector('.tab[data-t=tasks]').click()}
@@ -416,15 +416,24 @@ function needKey(){key='';lset('orga_key','');$('key-err').textContent='Passwort
 async function sync(){
   if(flushing)return;flushing=true;let again=false;
   try{
-    const h={'X-Key':key};if(vkey)h['X-Vorstand']=vkey;let last=null;
+    const h={'X-Key':key};if(vkey)h['X-Vorstand']=vkey;let last=null,tries=0;
+    const pull=async()=>{const r=await fetch(API+'/state',{headers:h,cache:'no-store',signal:sig()});
+      if(r.status===401){needKey();return null}if(!r.ok)throw 0;return r.json()};
     while(queue.length){
-      const r=await fetch(API+'/state',{method:'POST',headers:{...h,'Content-Type':'application/json'},body:JSON.stringify(queue[0]),signal:sig()});
+      // rev mitschicken: der Worker lehnt die Änderung ab, wenn inzwischen ein
+      // anderes Gerät geschrieben hat (409), statt sie still zu überschreiben.
+      const body={...queue[0],rev};
+      const r=await fetch(API+'/state',{method:'POST',headers:{...h,'Content-Type':'application/json'},body:JSON.stringify(body),cache:'no-store',signal:sig()});
       if(r.status===401)return needKey();
+      if(r.status===409){
+        if(++tries>4){queue.shift();lset('orga_q',queue);toast('Änderung konnte nicht gespeichert werden. Bitte noch einmal versuchen.');continue}
+        const st=await pull();if(!st)return;last=st;apply(st);continue;
+      }
       if(r.status>=400&&r.status<500){let e={};try{e=await r.json()}catch(_){}
         toast(e.error==='locked'?'Der Ablauf ist gesperrt.':e.error==='vorstand'?'Das darf nur der Vorstand.':'Eine Änderung wurde abgelehnt.');queue.shift();lset('orga_q',queue);continue}
       if(!r.ok)throw 0;
-      last=await r.json();queue.shift();lset('orga_q',queue)}
-    if(!last){const r=await fetch(API+'/state',{headers:h,signal:sig()});if(r.status===401)return needKey();if(!r.ok)throw 0;last=await r.json()}
+      last=await r.json();rev=last.rev;tries=0;queue.shift();lset('orga_q',queue)}
+    if(!last){const st=await pull();if(!st)return;last=st}
     offline=false;apply(last);netUI();again=queue.length>0
   }catch(e){offline=true;apply(base||{rev:-2},false);netUI()}
   finally{flushing=false}
@@ -474,7 +483,7 @@ function openTl(id){if(locked&&!isV)return toast('Der Ablauf ist gesperrt.');con
 function submitTl(){if(locked&&!isV)return toast('Der Ablauf ist gesperrt.');const time=$('tl-time').value,title=$('tl-title').value.trim(),desc=$('tl-desc').value.trim(),id=$('tl-id').value;
   if(!time||!title)return alert('Bitte Uhrzeit und Titel angeben.');
   put('timeline',id||ids(),{time,title,desc});closeM('m-tl')}
-const delTl=id=>{if(confirm('Punkt löschen?'))del('timeline',id)};
+const delTl=id=>{if(locked&&!isV)return toast('Der Ablauf ist gesperrt.');if(confirm('Punkt löschen?'))del('timeline',id)};
 
 /* Kassa (lokal) */
 const notes=[500,200,100,50,20,10,5],coins=[200,100,50,20,10,5,2,1];
@@ -499,15 +508,15 @@ function openPoll(){$('p-q').value='';$('p-o').value='';openM('m-poll');$('p-q')
 function submitPoll(){const q=$('p-q').value.trim(),o=$('p-o').value.split('\n').map(s=>s.trim()).filter(Boolean);
   if(!q||o.length<2)return alert('Bitte eine Frage und mindestens zwei Antworten angeben.');
   put('polls',ids(),{q,opts:o.map(t=>({t,v:[]})),ts:Date.now()});closeM('m-poll')}
-function vote(pid,idx){if(!user)return openUser();const p=polls.find(x=>x.id===pid);if(!p)return;if(p.closed)return toast('Die Umfrage ist abgeschlossen.');
+function vote(pid,idx){if(!user)return openUser();const p=polls.find(x=>x.id===pid);if(!p)return;if(p.closed)return toast('Die Umfrage ist abgeschlossen.');if(!Array.isArray(p.opts))return;
   put('polls',pid,{opts:p.opts.map((o,i)=>({t:o.t,v:(o.v||[]).filter(n=>n!==user).concat(i===idx?[user]:[])}))})}
 const delPoll=id=>{if(confirm('Umfrage löschen?'))del('polls',id)};
 const closePoll=(id,v)=>put('polls',id,{closed:v,closedBy:me()});
 function renderPolls(){
   $('poll-list').innerHTML=polls.length?polls.slice().sort((a,b)=>(b.ts||0)-(a.ts||0)).map(p=>{
-    const tot=p.opts.reduce((s,o)=>s+(o.v||[]).length,0),max=Math.max(...p.opts.map(o=>(o.v||[]).length));
+    const opts=Array.isArray(p.opts)?p.opts:[],tot=opts.reduce((s,o)=>s+(Array.isArray(o.v)?o.v.length:0),0),max=Math.max(0,...opts.map(o=>Array.isArray(o.v)?o.v.length:0));
     return `<div class="poll"><div class="row" style="margin-bottom:12px"><h3>${esc(p.q)}</h3><div class="acts">${p.closed?'<span class="as">Beschluss</span>':''}${isV?`<button class="btn ghost sm" onclick="closePoll('${p.id}',${!p.closed})">${p.closed?'Wieder öffnen':'Abschließen'}</button>`:''}<button class="btn ghost sm" onclick="delPoll('${p.id}')" aria-label="Löschen">${TRASH}</button></div></div>`+
-    p.opts.map((o,i)=>{const v=o.v||[],win=p.closed&&max>0&&v.length===max;return `<button class="opt ${v.includes(user)||win?'mine':''}" ${p.closed?'style="cursor:default"':''} onclick="vote('${p.id}',${i})"><i style="width:${tot?v.length/tot*100:0}%"></i><span>${esc(o.t)}</span><span>${v.length}</span></button>${v.length?`<div class="voters">${v.map(esc).join(', ')}</div>`:''}`}).join('')+
+    opts.map((o,i)=>{const v=Array.isArray(o.v)?o.v:[],win=p.closed&&max>0&&v.length===max;return `<button class="opt ${v.includes(user)||win?'mine':''}" ${p.closed?'style="cursor:default"':''} onclick="vote('${p.id}',${i})"><i style="width:${tot?v.length/tot*100:0}%"></i><span>${esc(o.t)}</span><span>${v.length}</span></button>${v.length?`<div class="voters">${v.map(esc).join(', ')}</div>`:''}`}).join('')+
     `<div style="font-size:.75rem;color:var(--muted)">${tot} Stimme${tot===1?'':'n'}</div></div>`}).join(''):'<div class="empty" style="max-width:760px">Noch keine Umfragen.</div>'}
 
 /* Helferplan, Pinnwand, Vorstand */
@@ -681,6 +690,7 @@ setInterval(()=>{if(key&&!document.hidden)call()},4000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&key)call()});
 window.addEventListener('online',()=>{if(key)call()});
 window.addEventListener('offline',()=>{offline=true;netUI()});
+window.addEventListener('beforeunload',e=>{if(queue.length){e.preventDefault();e.returnValue=''}});
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
