@@ -271,7 +271,7 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-conten
     <div class="nowbox" id="nowbox"></div>
     <div class="tl" id="tl-list"></div>
     <div class="vh" style="margin-top:36px"><div><h2 style="font-size:1.4rem">Helferplan</h2><p>Wer steht wann wo? Der Vorstand trägt die Schichten ein. „Bin da“ bestätigt die Anwesenheit.</p></div><button class="btn" id="hp-add" style="display:none" onclick="openM('m-hp')">+ Schicht eintragen</button></div>
-    <div id="ci-sum" class="vmode" style="margin-bottom:14px"></div>
+    <div id="ci-sum" style="margin-bottom:14px"></div>
     <div id="hp-list"></div>
   </section>
 
@@ -449,14 +449,14 @@ a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-conten
   <label for="g-note">Notiz (optional)</label><input id="g-note" maxlength="120">
   <div class="mb"><button class="btn" onclick="submitGuest()">Speichern</button><button class="btn ghost" onclick="closeM('m-guest')">Abbrechen</button></div></div></div>
 
-<div id="m-user" class="modal"><div class="mc" style="text-align:center"><h3>Wer bist du?</h3><p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Dein Name erscheint bei Aufgaben und Stimmen.</p>
-  <select id="user-sel"><option value="">Bitte wählen</option></select><button class="btn" style="width:100%" onclick="saveUser()">Speichern und starten</button>
+<div id="m-user" class="modal"><div class="mc" style="text-align:center"><h3>Wer bist du?</h3><p style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Dein Name erscheint bei Aufgaben, Check-ins und Stimmen. Du kannst die Seite auch ohne Namen ansehen.</p>
+  <select id="user-sel"><option value="">Bitte wählen</option></select><button class="btn" style="width:100%" onclick="saveUser()">Namen speichern</button>
   <button class="btn ghost" id="u-close" style="width:100%;margin-top:10px" onclick="closeM('m-user')">Schließen</button>
   <button class="btn ghost" id="u-out" style="width:100%;margin-top:18px;border-color:var(--bad);color:var(--bad)" onclick="logout()">Abmelden</button>
-  <p style="font-size:.75rem;color:var(--muted);margin-top:8px">Entfernt Passwort, Name und gespeicherte Daten von diesem Gerät.</p></div></div>
+  <p style="font-size:.75rem;color:var(--muted);margin-top:8px">Entfernt Name und gespeicherte Daten von diesem Gerät.</p></div></div>
 
-<div id="m-key" class="modal"><div class="mc" style="text-align:center"><h3>Passwort</h3><p id="key-err" style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Bitte gib das Passwort des Komitees ein.</p>
-  <input type="password" id="key-in" autocomplete="current-password" onkeydown="if(event.key==='Enter')saveKey()"><button class="btn" style="width:100%" onclick="saveKey()">Öffnen</button></div></div>
+<div id="m-key" class="modal"><div class="mc" style="text-align:center"><h3>Passwort</h3><p id="key-err" style="font-size:.85rem;color:var(--muted);margin-bottom:14px">Normalerweise ist kein Passwort nötig. Der Server verlangt noch eines (alter Stand).</p>
+  <input type="password" id="key-in" autocomplete="current-password" onkeydown="if(event.key==='Enter')saveKey()"><button class="btn" style="width:100%" onclick="saveKey()">Entsperren</button></div></div>
 
 <div id="m-hp" class="modal"><div class="mc"><h3>Schicht eintragen</h3>
   <label for="hp-area">Bereich</label><select id="hp-area"></select>
@@ -535,7 +535,7 @@ $('tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)re
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t===b));
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.t));window.scrollTo(0,0);
   if(b.dataset.t==='vorstand'&&isV)loadAdmin();if(b.dataset.t==='timeline')renderNow()});
-function openUser(){$('user-sel').value=user;$('u-close').style.display=user?'':'none';$('u-out').style.display=key?'':'none';openM('m-user')}
+function openUser(){$('user-sel').value=user;$('u-close').style.display='';$('u-out').style.display=(user||key)?'':'none';openM('m-user')}
 function saveUser(){const v=$('user-sel').value;if(!v)return alert('Bitte wähle deinen Namen aus.');user=v;lset('orga_user',v);$('cur-user').textContent=v;closeM('m-user');renderPolls()}
 
 /* Gemeinsame Daten */
@@ -575,11 +575,11 @@ function netUI(){const n=queue.length,p=$('net');
   p.style.display=offline||n?'':'none';p.innerHTML=(offline?'Offline':'Sendet')+(n?' · <b>'+n+'</b> wartend':'');
   if(offline)banner('Offline: Du siehst den letzten Stand. '+(n?n+(n===1?' Änderung wird':' Änderungen werden'):'Änderungen werden gespeichert und')+' gesendet, sobald wieder Netz da ist.',true);else banner('')}
 const sig=(ms=8000)=>typeof AbortSignal!=='undefined'&&AbortSignal.timeout?AbortSignal.timeout(ms):undefined;
-function needKey(){key='';lset('orga_key','');$('key-err').textContent='Passwort falsch. Bitte noch einmal versuchen.';openM('m-key')}
+function needKey(){key='';lset('orga_key','');$('key-err').textContent='Der Server verlangt noch ein Passwort (alter Stand). Bitte das Passwort des Komitees eingeben.';openM('m-key')}
 async function sync(){
   if(flushing)return;flushing=true;let again=false;
   try{
-    const h={'X-Key':key};if(vkey)h['X-Vorstand']=vkey;let last=null,tries=0;
+    const h={};if(key)h['X-Key']=key;if(vkey)h['X-Vorstand']=vkey;let last=null,tries=0;
     const pull=async()=>{const r=await fetch(API+'/state',{headers:h,cache:'no-store',signal:sig()});
       if(r.status===401){needKey();return null}if(!r.ok)throw 0;return r.json()};
     while(queue.length){
@@ -604,7 +604,6 @@ async function sync(){
 }
 async function call(body){
   if(!API||API.startsWith('HIER'))return banner('Die Worker-URL fehlt noch. Trage sie oben im Script bei API ein.');
-  if(!key){openM('m-key');return}
   if(body){queue.push(body);if(queue.length>300)queue.shift();lset('orga_q',queue);
     if(offline)toast('Offline gespeichert. Wird gesendet, sobald wieder Netz da ist.');apply(base||{rev:-2},false);netUI()}
   else if(navigator.onLine===false){offline=true;netUI();return}
@@ -616,7 +615,7 @@ async function unlockV(){const c=(prompt('Vorstand-Code:')||'').trim();if(!c)ret
   if(offline){vkey=old;lset('orga_vkey',old);return toast('Offline: Der Code kann gerade nicht geprüft werden.')}
   if(isV){toast('Vorstand-Werkzeuge freigeschaltet.');if($('v-vorstand').classList.contains('on'))loadAdmin()}else{vkey='';lset('orga_vkey','');toast('Vorstand-Code falsch.')}}
 function logout(){const n=queue.length;
-  if(!confirm(n?n+(n===1?' Änderung ist':' Änderungen sind')+' noch nicht gesendet und geht beim Abmelden verloren. Trotzdem abmelden?':'Von diesem Gerät abmelden? Passwort, Name und gespeicherte Daten werden entfernt.'))return;
+  if(!confirm(n?n+(n===1?' Änderung ist':' Änderungen sind')+' noch nicht gesendet und geht beim Abmelden verloren. Trotzdem abmelden?':'Von diesem Gerät abmelden? Name und gespeicherte Daten werden entfernt.'))return;
   queue=[];['orga_key','orga_vkey','orga_user','orga_cache','orga_q','orga_tseen'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
   key='';vkey='';location.reload()}
 function lockV(){vkey='';lset('orga_vkey','');rev=-1;call()}
@@ -890,8 +889,8 @@ async function submitLink(){const title=$('link-title').value.trim(),url=$('link
   const btn=$('link-save');btn.disabled=true;btn.textContent='Speichert …';
   try{
     if(file){
-      if(!key){needKey();return}
-      const r=await fetch(API+'/file',{method:'POST',headers:{'X-Key':key,'X-Filename':encodeURIComponent(file.name),'Content-Type':file.type||'application/octet-stream'},body:file,signal:sig(30000)});
+      const r=await fetch(API+'/file',{method:'POST',headers:{'X-Vorstand':vkey,'X-Filename':encodeURIComponent(file.name),'Content-Type':file.type||'application/octet-stream'},body:file,signal:sig(30000)});
+      if(r.status===403){toast('Nur der Vorstand kann Dateien hochladen.');return}
       if(r.status===401){needKey();return}
       if(!r.ok){toast(r.status===413?'Datei zu groß.':r.status===415?'Dieser Dateityp ist nicht erlaubt.':'Upload fehlgeschlagen.');return}
       const j=await r.json();
@@ -914,7 +913,7 @@ async function openFile(id,title,name){
   if(!id)return;const rec=linkbox.find(x=>x.fileId===id);
   if(!title)title=rec?rec.title:'';if(!name)name=rec?rec.name:'';$('view-title').textContent=title||name||'Dokument';$('view-body').innerHTML='<div class="mini">Wird geladen …</div>';openM('m-view');
   try{
-    const r=await fetch(API+'/file/'+encodeURIComponent(id),{headers:{'X-Key':key},cache:'no-store',signal:sig(30000)});
+    const r=await fetch(API+'/file/'+encodeURIComponent(id),{cache:'no-store',signal:sig(30000)});
     if(r.status===401){needKey();closeM('m-view');return}
     if(!r.ok)throw 0;
     const type=(r.headers.get('content-type')||'').split(';')[0].toLowerCase(),blob=await r.blob(),url=URL.createObjectURL(blob);viewUrls.push(url);
@@ -995,7 +994,7 @@ function openReport(){const rows=AREAS.map(a=>{const cs=csOf(a),co=coOf(a),dr=dr
 /* ===== Änderungsprotokoll, Papierkorb, Datensicherung ===== */
 const COLLBL={tasks:'Aufgabe',timeline:'Ablauf',polls:'Umfrage',helpers:'Schicht',found:'Fund',prizes:'Preis',guests:'Ehrengast',materials:'Material',linkbox:'Link/Dokument',sos:'Notfallkontakt',phones:'Telefonliste',cashlog:'Kassa-Zählung',cashstart:'Anfangsbestand',cashdrop:'Tresor-Einlage',cashsoll:'Soll',checkins:'Check-in',feedback:'Feedback',infos:'Infokarte',board:'Pinnwand',ticker:'Ticker',media:'Foto-Ordner',backup:'Sicherung',trash:'Papierkorb'};
 const when=ts=>new Date(ts||0).toLocaleString('de-AT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-async function loadAdmin(){if(!isV||!key)return;const h={'X-Key':key,'X-Vorstand':vkey};const ac=new AbortController();const t=setTimeout(()=>ac.abort(),9000);
+async function loadAdmin(){if(!isV)return;const h={'X-Vorstand':vkey};const ac=new AbortController();const t=setTimeout(()=>ac.abort(),9000);
   try{const [lr,tr]=await Promise.all([fetch(API+'/log',{headers:h,cache:'no-store',signal:ac.signal}),fetch(API+'/trash',{headers:h,cache:'no-store',signal:ac.signal})]);
     if(lr.ok){changelog=(await lr.json()).log||[];renderLog()}if(tr.ok){trashq=(await tr.json()).trash||[];renderTrash()}
   }catch(e){}finally{clearTimeout(t)}}
@@ -1004,8 +1003,8 @@ function renderTrash(){$('trash-list').innerHTML=trashq.length?trashq.map(t=>`<d
 async function restoreTrash(tid){await call({op:'restore',id:tid,by:me()});toast('Eintrag wiederhergestellt.');loadAdmin()}
 async function purgeTrash(tid){if(!confirm('Endgültig löschen? Das kann nicht rückgängig gemacht werden.'))return;await call({op:'purge',id:tid,by:me()});toast('Endgültig gelöscht.');loadAdmin()}
 async function emptyTrash(){if(!trashq.length)return toast('Der Papierkorb ist leer.');if(!confirm('Papierkorb wirklich leeren? Alle Einträge werden endgültig gelöscht.'))return;await call({op:'emptytrash',by:me()});toast('Papierkorb geleert.');loadAdmin()}
-async function downloadBackup(){if(!key)return needKey();$('backup-note').textContent='Sicherung wird erstellt …';
-  try{const r=await fetch(API+'/backup?files=1',{headers:{'X-Key':key,'X-Vorstand':vkey},cache:'no-store',signal:sig(45000)});
+async function downloadBackup(){if(!isV)return toast('Nur für den Vorstand.');$('backup-note').textContent='Sicherung wird erstellt …';
+  try{const r=await fetch(API+'/backup?files=1',{headers:{'X-Vorstand':vkey},cache:'no-store',signal:sig(45000)});
     if(r.status===401){needKey();return}if(!r.ok)throw 0;
     const j=await r.json(),blob=new Blob([JSON.stringify(j)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='orga-hub-sicherung-'+todayStr()+'.json';document.body.appendChild(a);a.click();
     setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},1500);
@@ -1017,7 +1016,7 @@ async function restoreBackup(input){const f=input.files&&input.files[0];input.va
   try{const raw=await f.text();let b;try{b=JSON.parse(raw)}catch(e){return alert('Die Datei ist keine gültige Sicherung.')}
     if(!b||b.format!=='orga-hub-backup')return alert('Die Datei ist keine Orga-Hub-Sicherung.');
     b.by=me();
-    const r=await fetch(API+'/restore',{method:'POST',headers:{'X-Key':key,'X-Vorstand':vkey,'Content-Type':'application/json'},body:JSON.stringify(b),cache:'no-store',signal:sig(45000)});
+    const r=await fetch(API+'/restore',{method:'POST',headers:{'X-Vorstand':vkey,'Content-Type':'application/json'},body:JSON.stringify(b),cache:'no-store',signal:sig(45000)});
     if(r.status===401)return needKey();if(!r.ok)return alert('Wiederherstellung fehlgeschlagen ('+r.status+').');
     const j=await r.json();if(j.state){rev=-1;apply(j.state);await call()}
     toast('Sicherung eingespielt.');loadAdmin()
@@ -1045,7 +1044,7 @@ const fill=(sel,groups)=>groups.forEach(([lab,arr])=>{const g=document.createEle
 fill($('user-sel'),[['Vorstand',vs],['Komitee',rest]]);
 AREAS.forEach(a=>{$('hp-area').add(new Option(a,a));$('cl-area').add(new Option(a,a))});
 fill($('t-as'),[['Vorstand-Mitglieder',vs],['Weitere Personen',rest]]);
-if(user)$('cur-user').textContent=user;else openM('m-user');
+if(user)$('cur-user').textContent=user;
 AREAS.forEach(a=>$('sh-a').add(new Option(a,a)));GCATS.forEach(c=>$('g-cat').add(new Option(c,c)));
 $('dl-members').innerHTML=members.map(n=>`<option value="${esc(n)}">`).join('');
 $('mehr-chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;
@@ -1057,9 +1056,9 @@ call();
 setInterval(renderV,60000);
 setInterval(tickNow,1000);
 setInterval(()=>{if(!document.hidden)renderShifts()},30000);
-setInterval(()=>{if(key&&!document.hidden)call()},4000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&key)call()});
-window.addEventListener('online',()=>{if(key)call()});
+setInterval(()=>{if(!document.hidden)call()},4000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)call()});
+window.addEventListener('online',()=>{call()});
 window.addEventListener('offline',()=>{offline=true;netUI()});
 window.addEventListener('beforeunload',e=>{if(queue.length){e.preventDefault();e.returnValue=''}});
 if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
