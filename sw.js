@@ -1,6 +1,6 @@
 // Service Worker für den Maturaball Orga-Hub: hält die App-Hülle offline bereit.
 // Muss im selben Ordner wie index.html liegen. Daten laufen weiter über den Worker-API-Aufruf in index.html.
-const C = 'orga-hub-v4';
+const C = 'orga-hub-v5';
 const SHELL = ['./', 'index.html'];
 // API-Aufrufe niemals vom Service Worker beantworten oder cachen – auch nicht,
 // wenn die App später direkt vom Worker ausgeliefert wird.
