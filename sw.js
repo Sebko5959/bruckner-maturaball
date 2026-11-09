@@ -1,7 +1,10 @@
 // Service Worker für den Maturaball Orga-Hub: hält die App-Hülle offline bereit.
 // Muss im selben Ordner wie index.html liegen. Daten laufen weiter über den Worker-API-Aufruf in index.html.
-const C = 'orga-hub-v2';
+const C = 'orga-hub-v4';
 const SHELL = ['./', 'index.html'];
+// API-Aufrufe niemals vom Service Worker beantworten oder cachen – auch nicht,
+// wenn die App später direkt vom Worker ausgeliefert wird.
+const API_PATH = /^\/(?:(?:state|log|trash|backup|restore)(?:\/|$)|file(?:\/|$))/;
 
 self.addEventListener('install', e => {
   self.skipWaiting();
@@ -24,9 +27,7 @@ self.addEventListener('fetch', e => {
   let u;
   try { u = new URL(r.url); } catch { return; }
   if (u.origin !== location.origin) return;
-  // API-Aufrufe niemals cachen – auch nicht, wenn die Seite später direkt
-  // vom Worker ausgeliefert wird.
-  if (/\/state\/?$/.test(u.pathname)) return;
+  if (API_PATH.test(u.pathname)) return;
 
   e.respondWith(
     fetch(r).then(res => {
