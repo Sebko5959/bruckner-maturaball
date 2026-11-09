@@ -545,7 +545,7 @@ $('tabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)re
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.t));window.scrollTo(0,0);
   if(b.dataset.t==='vorstand'&&isV)loadAdmin();if(b.dataset.t==='timeline')renderNow()});
 function openUser(){$('user-sel').value=user;$('u-close').style.display='';$('u-out').style.display=(user||key)?'':'none';openM('m-user')}
-function saveUser(){const v=$('user-sel').value;if(!v)return alert('Bitte wähle deinen Namen aus.');user=v;lset('orga_user',v);$('cur-user').textContent=v;closeM('m-user');rev=-1;renderAll();call()}
+function saveUser(){const v=$('user-sel').value;if(!v)return alert('Bitte wähle deinen Namen aus.');user=v;lset('orga_user',v);if(members.includes(v)&&!tkey)askTeam();$('cur-user').textContent=v;closeM('m-user');rev=-1;renderAll();Promise.resolve(call()).then(()=>{if(members.includes(user)&&!isV&&srvRole!=='komitee'){tkey='';lset('orga_tkey','');toast('Komitee-Code falsch oder am Server nicht gesetzt.')}})}
 
 /* Gemeinsame Daten */
 const API='https://orga-hub.treckasebastian111.workers.dev'; // z. B. https://orga-hub.dein-name.workers.dev
@@ -559,13 +559,13 @@ const banner=(m,info)=>{$('banner').textContent=m;$('banner').style.display=m?'b
 const todayStr=()=>{const n=new Date();return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0')};
 const fmtD=d=>d?d.slice(8,10)+'.'+d.slice(5,7)+'.':'';
 function renderAll(){for(const f of [renderTasks,renderTl,renderPolls,renderHp,renderBoard,renderV,renderLive,renderTicker,renderMaterials,renderInfos,renderLinks,renderSponsors,renderFeedback,renderCashGrid,renderNow,renderCheckinMe,renderHo]){try{f()}catch(e){console.error(e)}}
-  $('v-btn').style.display=(isV||(user&&!isK()))?'none':'';$('hp-add').style.display=isV?'':'none';$('save-cash').style.display=isK()?'block':'none';$('h-pill').style.display=isK()?'':'none';
+  $('v-btn').style.display=(isV||(user&&!members.includes(user)))?'none':'';$('hp-add').style.display=isV?'':'none';$('save-cash').style.display=isK()?'block':'none';$('h-pill').style.display=isK()?'':'none';
   document.querySelectorAll('.vmode').forEach(el=>el.classList.toggle('on',isV));
   $('tl-add').style.display=isV?'':'none';$('lock-note').textContent=locked?'Der Ablauf ist vom Vorstand gesperrt.':'';
   fillUsers();applyNav()}
 function apply(d0,fromServer=true){if(fromServer){base=d0;lset('orga_cache',d0)}
   const d=queue.length?overlay(d0):d0,nv=!!d.v;if(d.rev===rev&&nv===isV&&lastQ===queue.length)return;lastQ=queue.length;
-  rev=d.rev;isV=nv;tasks=toArr(d.tasks);tl=toArr(d.timeline);polls=toArr(d.polls);helpers=toArr(d.helpers);cashlog=toArr(d.cashlog);board=d.board||null;locked=!!d.locked;
+  rev=d.rev;isV=nv;srvRole=d.role||'helfer';tasks=toArr(d.tasks);tl=toArr(d.timeline);polls=toArr(d.polls);helpers=toArr(d.helpers);cashlog=toArr(d.cashlog);board=d.board||null;locked=!!d.locked;
   materials=toArr(d.materials);linkbox=toArr(d.linkbox);checkins=toArr(d.checkins);feedback=toArr(d.feedback);infos=toArr(d.infos);
   cashstart=toArr(d.cashstart);cashdrop=toArr(d.cashdrop);cashsoll=toArr(d.cashsoll);handover=toArr(d.handover);
   sos=toArr(d.sos);guests=toArr(d.guests);phones=toArr(d.phones);found=toArr(d.found);prizes=toArr(d.prizes);media=d.media||null;newTicker(d.ticker||null);renderAll()}
@@ -589,7 +589,7 @@ function needKey(){key='';lset('orga_key','');$('key-err').textContent='Der Serv
 async function sync(){
   if(flushing)return;flushing=true;let again=false;
   try{
-    const h={};if(key)h['X-Key']=key;if(vkey)h['X-Vorstand']=vkey;h['X-Role']=roleOf();h['X-Dev']=DEV;let last=null,tries=0;
+    const h={};if(key)h['X-Key']=key;if(vkey)h['X-Vorstand']=vkey;if(tkey)h['X-Team']=tkey;h['X-Dev']=DEV;let last=null,tries=0;
     const pull=async()=>{const r=await fetch(API+'/state',{headers:h,cache:'no-store',signal:sig()});
       if(r.status===401){needKey();return null}if(!r.ok)throw 0;return r.json()};
     while(queue.length){
@@ -626,7 +626,7 @@ async function unlockV(){const c=(prompt('Vorstand-Code:')||'').trim();if(!c)ret
   if(isV){toast('Vorstand-Werkzeuge freigeschaltet.');if($('v-vorstand').classList.contains('on'))loadAdmin()}else{vkey='';lset('orga_vkey','');toast('Vorstand-Code falsch.')}}
 function logout(){const n=queue.length;
   if(!confirm(n?n+(n===1?' Änderung ist':' Änderungen sind')+' noch nicht gesendet und geht beim Abmelden verloren. Trotzdem abmelden?':'Von diesem Gerät abmelden? Name und gespeicherte Daten werden entfernt.'))return;
-  queue=[];['orga_key','orga_vkey','orga_user','orga_cache','orga_q','orga_tseen'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
+  queue=[];['orga_key','orga_vkey','orga_user','orga_cache','orga_q','orga_tseen','orga_tkey'].forEach(k=>{try{localStorage.removeItem(k)}catch(e){}});
   key='';vkey='';location.reload()}
 function lockV(){vkey='';lset('orga_vkey','');rev=-1;call()}
 
@@ -900,7 +900,7 @@ async function submitLink(){const title=$('link-title').value.trim(),url=$('link
   const vis=isV?$('link-vis').value:'internal',btn=$('link-save');btn.disabled=true;btn.textContent='Speichert …';
   try{
     if(file){
-      const r=await fetch(API+'/file',{method:'POST',headers:{'X-Vorstand':vkey,'X-Role':roleOf(),'X-Dev':DEV,'X-Filename':encodeURIComponent(file.name),'Content-Type':file.type||'application/octet-stream'},body:file,signal:sig(30000)});
+      const r=await fetch(API+'/file',{method:'POST',headers:{'X-Vorstand':vkey,'X-Team':tkey,'X-Dev':DEV,'X-Filename':encodeURIComponent(file.name),'Content-Type':file.type||'application/octet-stream'},body:file,signal:sig(30000)});
       if(r.status===403){toast('Dafür fehlt dir die Berechtigung.');return}
       if(r.status===401){needKey();return}
       if(!r.ok){toast(r.status===413?'Datei zu groß.':r.status===415?'Dieser Dateityp ist nicht erlaubt.':'Upload fehlgeschlagen.');return}
@@ -926,7 +926,7 @@ async function openFile(id,title,name){
   if(!id)return;const rec=linkbox.find(x=>x.fileId===id);
   if(!title)title=rec?rec.title:'';if(!name)name=rec?rec.name:'';$('view-title').textContent=title||name||'Dokument';$('view-body').innerHTML='<div class="mini">Wird geladen …</div>';openM('m-view');
   try{
-    const r=await fetch(API+'/file/'+encodeURIComponent(id),{headers:{'X-Vorstand':vkey,'X-Role':roleOf(),'X-Dev':DEV},cache:'no-store',signal:sig(30000)});
+    const r=await fetch(API+'/file/'+encodeURIComponent(id),{headers:{'X-Vorstand':vkey,'X-Team':tkey,'X-Dev':DEV},cache:'no-store',signal:sig(30000)});
     if(r.status===401){needKey();closeM('m-view');return}
     if(!r.ok)throw 0;
     const type=(r.headers.get('content-type')||'').split(';')[0].toLowerCase(),blob=await r.blob(),url=URL.createObjectURL(blob);viewUrls.push(url);
@@ -1052,8 +1052,10 @@ function tickNow(){const st=tlState(),k=(st.cur?st.cur.id:'')+'|'+(st.next?st.ne
   if($('stage').classList.contains('on'))updateStage()}
 
 /* ===== Rollen, Navigation, Check-in, Übergabe ===== */
-const HALL={lat:48.1545,lon:14.0290},RADIUS=200; // Koordinaten prüfen, muss mit worker.js übereinstimmen
-const roleOf=()=>isV?'vorstand':(members.includes(user)?'komitee':'helfer');
+const HALL={lat:48.15441,lon:14.02115},RADIUS=200; // Koordinaten prüfen, muss mit worker.js übereinstimmen
+let srvRole='helfer',tkey=lget('orga_tkey','');
+const roleOf=()=>isV?'vorstand':(srvRole==='komitee'&&members.includes(user)?'komitee':'helfer');
+function askTeam(){const c=(prompt('Komitee-Code:')||'').trim();if(c){tkey=c;lset('orga_tkey',c)}}
 const isK=()=>roleOf()!=='helfer';
 function applyNav(){const K=isK(),vis={tasks:K,timeline:true,cash:K,polls:K,live:true,mehr:true,vorstand:isV};
   document.querySelectorAll('.tab').forEach(x=>x.style.display=vis[x.dataset.t]?'':'none');
@@ -1096,6 +1098,7 @@ $('mehr-chips').addEventListener('click',e=>{const b=e.target.closest('.chip');i
 buildCash();calc();renderTasks();renderTl();renderPolls();renderLive();renderNow();
 if(base)apply(base,false);netUI();
 call();
+if(members.includes(user)&&!tkey)setTimeout(()=>{askTeam();rev=-1;call()},900);
 setInterval(renderV,60000);
 setInterval(tickNow,1000);
 setInterval(()=>{if(!document.hidden){renderShifts();renderHp();renderCheckinMe()}},30000);
